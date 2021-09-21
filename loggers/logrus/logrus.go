@@ -1,6 +1,8 @@
 package logruslog
 
 import (
+	"fmt"
+
 	"github.com/Fishwaldo/go-logadapter"
 	"github.com/sirupsen/logrus"
 )
@@ -43,7 +45,17 @@ func (l *LruLogger) New(name string) logadapter.Logger {
 	nl := &LruLogger{Lru: logrus.NewEntry(l.Lru.Logger)}
 	return nl
 }
+func (l *LruLogger) SetPrefix(name string) {
+	l.Lru = l.Lru.WithField("Prefix", name)
+}
 
+func (l *LruLogger) GetPrefix() (string) {
+	prefix, ok := l.Lru.Data["Prefix"]
+	if ok {
+		return fmt.Sprint(prefix)
+	}
+	return ""
+}
 //LogrusDefaultLogger Return Logger based on logrus with new instance
 func LogrusDefaultLogger() logadapter.Logger {
 	// TODO control verbosity

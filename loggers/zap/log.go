@@ -47,6 +47,13 @@ func (l *ZapLogger) Sync() {
 
 }
 
+func (l *ZapLogger) SetPrefix(name string) {
+	// XXX TODO
+}
+func (l ZapLogger) GetPrefix() (string) {
+	return ""
+}
+
 //DefaultLogger Return Default Sched Logger based on Zap's sugared logger
 func NewZapLogger() *ZapLogger {
 	// TODO control verbosity

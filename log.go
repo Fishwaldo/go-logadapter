@@ -6,6 +6,7 @@ import (
 	"log"
 	"sync"
 	"os"
+	"strings"
 
 	"github.com/Fishwaldo/go-logadapter/utils"
 )
@@ -20,12 +21,14 @@ type Logger interface {
 	Panic(message string, params ...interface{})
 	New(name string) (l Logger)
 	With(key string, value interface{}) (l Logger)
+	SetPrefix(name string)
+	GetPrefix() (string)
 	Sync()
 }
 
 //DefaultLogger uses Golang Standard Logging Libary
 func DefaultLogger() (l *StdLogger) {
-	stdlogger := log.New(os.Stderr, "sched  - ", log.LstdFlags)
+	stdlogger := log.New(os.Stderr, "log  - ", log.LstdFlags)
 	stdlog := &StdLogger{Log: *stdlogger, keys: make(map[string]interface{})}
 	return stdlog
 }
@@ -118,4 +121,16 @@ func (l *StdLogger) SetLevel(level Log_Level) {
 
 func (l *StdLogger) GetLevel() (level Log_Level) {
 	return l.level
+}
+
+func (l *StdLogger) SetPrefix(name string) {
+	l.Log.SetPrefix(fmt.Sprintf("%s - ", name))
+}
+
+func (l *StdLogger) GetPrefix() (string) {
+	temp := strings.Fields(l.Log.Prefix())
+	if len(temp) > 0 {
+		return temp[0]
+	} 
+	return ""
 }
