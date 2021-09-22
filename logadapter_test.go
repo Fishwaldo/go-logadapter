@@ -2,6 +2,7 @@ package logadapter_test
 
 import (
 	"github.com/Fishwaldo/go-logadapter"
+	"github.com/Fishwaldo/go-logadapter/loggers/std"
 )
 
 type TestStruct struct {
@@ -9,8 +10,8 @@ type TestStruct struct {
 }
 
 func (t *TestStruct) Init() {
-	temp := logadapter.DefaultLogger()
-	temp.SetLevel(logadapter.LOG_TRACE)
+	temp := stdlogger.DefaultLogger()
+	temp.SetLevel(stdlogger.LOG_TRACE)
 	t.Logger = temp
 }
 

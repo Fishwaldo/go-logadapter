@@ -1,30 +1,16 @@
-package logadapter
+package stdlogger
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
-	"sync"
 	"os"
+	"sync"
+	"fmt"
 	"strings"
+	"encoding/json"
 
-	"github.com/Fishwaldo/go-logadapter/utils"
+	"github.com/Fishwaldo/go-logadapter"
+	"github.com/Fishwaldo/go-logadapter/internal/utils"
 )
-
-type Logger interface {
-	Trace(message string, params ...interface{})
-	Debug(message string, params ...interface{})
-	Info(message string, params ...interface{})
-	Warn(message string, params ...interface{})
-	Error(message string, params ...interface{})
-	Fatal(message string, params ...interface{})
-	Panic(message string, params ...interface{})
-	New(name string) (l Logger)
-	With(key string, value interface{}) (l Logger)
-	SetPrefix(name string)
-	GetPrefix() (string)
-	Sync()
-}
 
 //DefaultLogger uses Golang Standard Logging Libary
 func DefaultLogger() (l *StdLogger) {
@@ -83,7 +69,7 @@ func (l *StdLogger) Fatal(message string, params ...interface{}) {
 func (l *StdLogger) Panic(message string, params ...interface{}) {
 	l.Log.Panic(fmt.Printf("PANIC: %s - %s", fmt.Sprintf(message, params...), l.getKeys()))
 }
-func (l *StdLogger) New(name string) Logger {
+func (l *StdLogger) New(name string) logadapter.Logger {
 	//nl := &StdLogger{keys: l.keys}
 	nl := &StdLogger{level: l.level}
 	nl.Log.SetPrefix(fmt.Sprintf("%s.%s", l.Log.Prefix(), name))
@@ -91,7 +77,7 @@ func (l *StdLogger) New(name string) Logger {
 	nl.Log.SetOutput(l.Log.Writer())
 	return nl
 }
-func (l *StdLogger) With(key string, value interface{}) Logger {
+func (l *StdLogger) With(key string, value interface{}) logadapter.Logger {
 	l.mx.Lock()
 	defer l.mx.Unlock()
 	stdlog := &StdLogger{level: l.level, keys: utils.CopyableMap(l.keys).DeepCopy()}
