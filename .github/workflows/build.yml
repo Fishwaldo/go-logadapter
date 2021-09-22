@@ -64,6 +64,7 @@ jobs:
           with:
             badge-codecov: 'true'
             badge-godoc: 'true'
-            badge-goreadme: 'true'
+            email: 'justin@dynam.ac'
+            title: 'Go-LogAdapter'
             # Optional: Token allows goreadme to comment the PR with diff preview.
             github-token: '${{ secrets.GITHUB_TOKEN }}'
