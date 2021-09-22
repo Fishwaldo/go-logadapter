@@ -36,6 +36,8 @@ import (
 	"github.com/Fishwaldo/go-logadapter/internal/utils"
 )
 
+var _ logadapter.Logger = (*StdLogger)(nil)
+
 //DefaultLogger uses Golang Standard Logging Libary
 func DefaultLogger() (l *StdLogger) {
 	stdlogger := log.New(os.Stderr, "log  - ", log.LstdFlags)
@@ -47,56 +49,48 @@ type StdLogger struct {
 	Log   log.Logger
 	keys  map[string]interface{}
 	mx    sync.Mutex
-	level Log_Level
+	level logadapter.Log_Level
 }
 
-type Log_Level int
-
-const (
-	LOG_TRACE Log_Level = iota
-	LOG_DEBUG
-	LOG_INFO
-	LOG_WARN
-	LOG_ERROR
-	LOG_FATAL
-	LOG_PANIC
-)
-
 func (l *StdLogger) Trace(message string, params ...interface{}) {
-	if l.level <= LOG_TRACE {
+	if l.level <= logadapter.LOG_TRACE {
 		l.Log.Printf("TRACE: %s - %s", fmt.Sprintf(message, params...), l.getKeys())
 	}
 }
 func (l *StdLogger) Debug(message string, params ...interface{}) {
-	if l.level <= LOG_DEBUG {
+	if l.level <= logadapter.LOG_DEBUG {
 		l.Log.Printf("DEBUG: %s - %s", fmt.Sprintf(message, params...), l.getKeys())
 	}
 }
 func (l *StdLogger) Info(message string, params ...interface{}) {
-	if l.level <= LOG_INFO {
+	if l.level <= logadapter.LOG_INFO {
 		l.Log.Printf("INFO: %s - %s", fmt.Sprintf(message, params...), l.getKeys())
 	}
 }
 func (l *StdLogger) Warn(message string, params ...interface{}) {
-	if l.level <= LOG_WARN {
+	if l.level <= logadapter.LOG_WARN {
 		l.Log.Printf("WARN: %s - %s", fmt.Sprintf(message, params...), l.getKeys())
 	}
 }
 func (l *StdLogger) Error(message string, params ...interface{}) {
-	if l.level <= LOG_ERROR {
+	if l.level <= logadapter.LOG_ERROR {
 		l.Log.Printf("ERROR: %s - %s", fmt.Sprintf(message, params...), l.getKeys())
 	}
 }
 func (l *StdLogger) Fatal(message string, params ...interface{}) {
+  	if l.level <= logadapter.LOG_FATAL {
 	l.Log.Fatal(fmt.Printf("FATAL: %s - %s", fmt.Sprintf(message, params...), l.getKeys()))
+    }
 }
 func (l *StdLogger) Panic(message string, params ...interface{}) {
+  	if l.level <= logadapter.LOG_PANIC {
 	l.Log.Panic(fmt.Printf("PANIC: %s - %s", fmt.Sprintf(message, params...), l.getKeys()))
+    }
 }
 func (l *StdLogger) New(name string) logadapter.Logger {
 	//nl := &StdLogger{keys: l.keys}
-	nl := &StdLogger{level: l.level}
-	nl.Log.SetPrefix(fmt.Sprintf("%s.%s", l.Log.Prefix(), name))
+	nl := &StdLogger{level: l.level, keys: make(map[string]interface{})}
+	nl.SetPrefix(name)
 	nl.Log.SetFlags(l.Log.Flags())
 	nl.Log.SetOutput(l.Log.Writer())
 	return nl
@@ -105,7 +99,7 @@ func (l *StdLogger) With(key string, value interface{}) logadapter.Logger {
 	l.mx.Lock()
 	defer l.mx.Unlock()
 	stdlog := &StdLogger{level: l.level, keys: utils.CopyableMap(l.keys).DeepCopy()}
-	stdlog.Log.SetPrefix(l.Log.Prefix())
+	stdlog.SetPrefix(l.GetPrefix())
 	stdlog.Log.SetFlags(l.Log.Flags())
 	stdlog.Log.SetOutput(l.Log.Writer())
 	stdlog.keys[key] = value
@@ -125,11 +119,11 @@ func (l *StdLogger) getKeys() (message string) {
 	return err.Error()
 }
 
-func (l *StdLogger) SetLevel(level Log_Level) {
+func (l *StdLogger) SetLevel(level logadapter.Log_Level) {
 	l.level = level
 }
 
-func (l *StdLogger) GetLevel() (level Log_Level) {
+func (l *StdLogger) GetLevel() (logadapter.Log_Level) {
 	return l.level
 }
 

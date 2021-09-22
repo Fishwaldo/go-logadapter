@@ -53,8 +53,24 @@ type Logger interface {
 	SetPrefix(name string)
 	// Get the Log Prefix
 	GetPrefix() (string)
+	// Set Logging Level
+	SetLevel(Log_Level)
+	// Get Logging Level
+	GetLevel() (Log_Level)
 	// Sync/Flush the Log Buffers 
 	Sync()
 }
 
 
+type Log_Level int
+
+const (
+	LOG_TRACE Log_Level = iota
+	LOG_DEBUG
+	LOG_INFO
+	LOG_WARN
+	LOG_ERROR
+	LOG_FATAL
+	LOG_PANIC
+	LOG_UNKNOWN
+)
