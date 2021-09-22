@@ -33,6 +33,7 @@ var _ logadapter.Logger = (*ZapLogger)(nil)
 
 type ZapLogger struct {
 	Zap *zap.SugaredLogger
+	lvl logadapter.Log_Level
 }
 
 func (l *ZapLogger) With(key string, value interface{}) logadapter.Logger {
@@ -41,25 +42,39 @@ func (l *ZapLogger) With(key string, value interface{}) logadapter.Logger {
 }
 
 func (l *ZapLogger) Trace(message string, params ...interface{}) {
+	if l.lvl <= logadapter.LOG_TRACE {
 	l.Zap.Debugf(message, params...)
+	}
 }
 func (l *ZapLogger) Debug(message string, params ...interface{}) {
-	l.Zap.Debugf(message, params...)
+	if l.lvl <= logadapter.LOG_DEBUG {
+		l.Zap.Debugf(message, params...)
+	}
 }
 func (l *ZapLogger) Info(message string, params ...interface{}) {
+	if l.lvl <= logadapter.LOG_INFO {
 	l.Zap.Infof(message, params...)
+	}
 }
 func (l *ZapLogger) Warn(message string, params ...interface{}) {
-	l.Zap.Warnf(message, params...)
+	if l.lvl <= logadapter.LOG_WARN {
+		l.Zap.Warnf(message, params...)
+	}
 }
 func (l *ZapLogger) Error(message string, params ...interface{}) {
-	l.Zap.Errorf(message, params...)
+	if l.lvl <= logadapter.LOG_ERROR {
+		l.Zap.Errorf(message, params...)
+	}
 }
 func (l *ZapLogger) Fatal(message string, params ...interface{}) {
-	l.Zap.Fatalf(message, params...)
+	if l.lvl <= logadapter.LOG_FATAL {
+		l.Zap.Fatalf(message, params...)
+	}
 }
 func (l *ZapLogger) Panic(message string, params ...interface{}) {
-	l.Zap.Panicf(message, params...)
+	if l.lvl <= logadapter.LOG_PANIC {
+		l.Zap.Panicf(message, params...)
+	}
 }
 func (l *ZapLogger) New(name string) (nl logadapter.Logger) {
 	zl := &ZapLogger{Zap: l.Zap}
@@ -76,6 +91,13 @@ func (l *ZapLogger) SetPrefix(name string) {
 }
 func (l ZapLogger) GetPrefix() (string) {
 	return ""
+}
+
+func (l *ZapLogger) GetLevel() (logadapter.Log_Level) {
+	return l.lvl
+}
+func (l *ZapLogger) SetLevel(lvl logadapter.Log_Level) {
+	l.lvl = lvl
 }
 
 //DefaultLogger Return Default Sched Logger based on Zap's sugared logger

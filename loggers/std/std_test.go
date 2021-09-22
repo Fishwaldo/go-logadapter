@@ -30,13 +30,14 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/Fishwaldo/go-logadapter"
 	"github.com/Fishwaldo/go-logadapter/loggers/std"
 )
 
-func TestDefaultLogger(t *testing.T) {
+func TestStdLogger(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
-	if logger.GetLevel() != stdlogger.LOG_TRACE {
+	logger.SetLevel(logadapter.LOG_TRACE)
+	if logger.GetLevel() != logadapter.LOG_TRACE {
 		t.Errorf("Can't Set Logging Level")
 	}
 }
@@ -48,9 +49,9 @@ func captureOutput(l *stdlogger.StdLogger, f func()) string {
     l.Log.SetOutput(os.Stderr)
     return buf.String()
 }
-func TestLogTrace(t *testing.T) {
+func TestStdTrace(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
+	logger.SetLevel(logadapter.LOG_TRACE)
 	output := captureOutput(logger, func() { 
 		logger.Trace("Hello %s", "world")
 	})
@@ -59,9 +60,9 @@ func TestLogTrace(t *testing.T) {
 		t.Errorf("Log Trace Failed: %s", output)
 	}
 }
-func TestLogDebug(t *testing.T) {
+func TestStdDebug(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
+	logger.SetLevel(logadapter.LOG_TRACE)
 	output := captureOutput(logger, func() { 
 		logger.Debug("Hello %s", "world")
 	})
@@ -71,9 +72,9 @@ func TestLogDebug(t *testing.T) {
 	}
 }
 
-func TestLogInfo(t *testing.T) {
+func TestStdInfo(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
+	logger.SetLevel(logadapter.LOG_TRACE)
 	output := captureOutput(logger, func() { 
 		logger.Info("Hello %s", "world")
 	})
@@ -83,9 +84,9 @@ func TestLogInfo(t *testing.T) {
 	}
 }
 
-func TestLogWarn(t *testing.T) {
+func TestStdWarn(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
+	logger.SetLevel(logadapter.LOG_TRACE)
 	output := captureOutput(logger, func() { 
 		logger.Warn("Hello %s", "world")
 	})
@@ -95,9 +96,9 @@ func TestLogWarn(t *testing.T) {
 	}
 }
 
-func TestLogError(t *testing.T) {
+func TestStdError(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
+	logger.SetLevel(logadapter.LOG_TRACE)
 	output := captureOutput(logger, func() { 
 		logger.Error("Hello %s", "world")
 	})
@@ -107,7 +108,7 @@ func TestLogError(t *testing.T) {
 	}
 }
 
-func TestLogFatal(t *testing.T) {
+func TestStdFatal(t *testing.T) {
 	//logger := DefaultLogger()
 	//logger.SetLevel(LOG_TRACE)
 	//output := captureOutput(logger, func() { 
@@ -119,9 +120,9 @@ func TestLogFatal(t *testing.T) {
 	//}
 }
 
-func TestLogPanic(t *testing.T) {
+func TestStdPanic(t *testing.T) {
 	logger := stdlogger.DefaultLogger()
-	logger.SetLevel(stdlogger.LOG_TRACE)
+	logger.SetLevel(logadapter.LOG_TRACE)
 	defer func() {
 		if err := recover(); err == nil {
 			t.Errorf("Log Panic Recovery Failed")
@@ -134,5 +135,83 @@ func TestLogPanic(t *testing.T) {
 	validmsg := regexp.MustCompile(`^.* PANIC: Hello world \- {}`)
 	if !validmsg.MatchString(output) {
 		t.Errorf("Log Panic Failed: %s", output)
+	}
+}
+func TestStdPrefix(t *testing.T) {
+	logger := stdlogger.DefaultLogger()
+	logger.SetLevel(logadapter.LOG_TRACE)
+	if logger.GetPrefix() != "log" {
+		t.Errorf("Empty Log Prefix Failed: %s", logger.GetPrefix())
+	}
+	logger.SetPrefix("TestStd")
+
+	output := captureOutput(logger, func() { 
+		logger.Info("Hello %s", "world")
+	})
+	validmsg := regexp.MustCompile(`^TestStd .* INFO: Hello world \- {}`)
+	if !validmsg.MatchString(output) {
+		t.Errorf("Log Prefix Failed: %s", output)
+	}
+	if logger.GetPrefix() != "TestStd" {
+		t.Errorf("Log Prefix Failed: %s", logger.GetPrefix())
+	}
+}
+
+func TestStdLevel(t *testing.T) {
+	logger := stdlogger.DefaultLogger()
+	logger.SetLevel(logadapter.LOG_TRACE)
+	if logger.GetLevel() != logadapter.LOG_TRACE {
+		t.Errorf("Log SetLevel to Trace Failed: %d", logger.GetLevel())
+	}
+	logger.SetLevel(logadapter.LOG_DEBUG)
+	if logger.GetLevel() != logadapter.LOG_DEBUG {
+		t.Errorf("Log SetLevel to Debug Failed: %d", logger.GetLevel())
+	}
+	logger.SetLevel(logadapter.LOG_INFO)
+	if logger.GetLevel() != logadapter.LOG_INFO {
+		t.Errorf("Log SetLevel to Info Failed: %d", logger.GetLevel())
+	}
+	logger.SetLevel(logadapter.LOG_WARN)
+	if logger.GetLevel() != logadapter.LOG_WARN {
+		t.Errorf("Log SetLevel to Trace Failed: %d", logger.GetLevel())
+	}
+	logger.SetLevel(logadapter.LOG_ERROR)
+	if logger.GetLevel() != logadapter.LOG_ERROR {
+		t.Errorf("Log SetLevel to Error Failed: %d", logger.GetLevel())
+	}
+	logger.SetLevel(logadapter.LOG_FATAL)
+	if logger.GetLevel() != logadapter.LOG_FATAL {
+		t.Errorf("Log SetLevel to Fatal Failed: %d", logger.GetLevel())
+	}
+	logger.SetLevel(logadapter.LOG_PANIC)
+	if logger.GetLevel() != logadapter.LOG_PANIC {
+		t.Errorf("Log SetLevel to Panic Failed: %d", logger.GetLevel())
+	}
+}
+
+func TestStdNewLog(t *testing.T) {
+	logger := stdlogger.DefaultLogger()
+	logger.SetLevel(logadapter.LOG_TRACE)
+	logger2 := logger.New("Blah")
+	output := captureOutput(logger2.(*stdlogger.StdLogger), func() { 
+		logger2.Error("Hello %s", "world")
+	})
+	validmsg := regexp.MustCompile(`^Blah .* ERROR: Hello world \- {}`)
+	if !validmsg.MatchString(output) {
+		t.Errorf("Log Error Failed: %s", output)
+	}
+}
+
+func TestStdWith(t *testing.T) {
+	logger := stdlogger.DefaultLogger()
+	logger.SetLevel(logadapter.LOG_TRACE)
+	logger2 := logger.With("Test", "Message")
+
+	output := captureOutput(logger2.(*stdlogger.StdLogger), func() { 
+		logger2.Info("Hello %s", "world")
+	})
+	validmsg := regexp.MustCompile(`^.* INFO: Hello world \- {\"Test\":\"Message\"}`)
+	if !validmsg.MatchString(output) {
+		t.Errorf("Log With Failed: %s", output)
 	}
 }

@@ -67,6 +67,7 @@ func (l *LruLogger) Sync() {
 }
 func (l *LruLogger) New(name string) logadapter.Logger {
 	nl := &LruLogger{Lru: logrus.NewEntry(l.Lru.Logger)}
+	nl.SetPrefix(name)
 	return nl
 }
 func (l *LruLogger) SetPrefix(name string) {
@@ -80,9 +81,48 @@ func (l *LruLogger) GetPrefix() (string) {
 	}
 	return ""
 }
+func (l *LruLogger) SetLevel(level logadapter.Log_Level) {
+	switch level {
+		case logadapter.LOG_TRACE:
+			l.Lru.Logger.SetLevel(logrus.TraceLevel)
+		case logadapter.LOG_DEBUG:
+			l.Lru.Logger.SetLevel(logrus.DebugLevel)
+		case logadapter.LOG_INFO:
+			l.Lru.Logger.SetLevel(logrus.InfoLevel)
+		case logadapter.LOG_WARN:
+			l.Lru.Logger.SetLevel(logrus.WarnLevel)
+		case logadapter.LOG_ERROR:
+			l.Lru.Logger.SetLevel(logrus.ErrorLevel)
+		case logadapter.LOG_FATAL:
+			l.Lru.Logger.SetLevel(logrus.FatalLevel)
+		case logadapter.LOG_PANIC:
+			l.Lru.Logger.SetLevel(logrus.PanicLevel)		
+	}
+}
+func (l *LruLogger) GetLevel() (logadapter.Log_Level) {
+	switch l.Lru.Logger.GetLevel() {
+	case logrus.TraceLevel:
+		return logadapter.LOG_TRACE
+	case logrus.DebugLevel:
+		return logadapter.LOG_DEBUG
+	case logrus.InfoLevel:
+		return logadapter.LOG_INFO
+	case logrus.WarnLevel:
+		return logadapter.LOG_WARN
+	case logrus.ErrorLevel:
+		return logadapter.LOG_ERROR
+	case logrus.FatalLevel:
+		return logadapter.LOG_FATAL
+	case logrus.PanicLevel:
+		return logadapter.LOG_PANIC
+	}
+	return logadapter.LOG_UNKNOWN
+}
+
 //LogrusDefaultLogger Return Logger based on logrus with new instance
-func LogrusDefaultLogger() logadapter.Logger {
+func LogrusDefaultLogger() (*LruLogger) {
 	// TODO control verbosity
 	l := &LruLogger{Lru: logrus.NewEntry(logrus.New())}
 	return l
 }
+
