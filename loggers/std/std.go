@@ -78,10 +78,14 @@ func (l *StdLogger) Error(message string, params ...interface{}) {
 	}
 }
 func (l *StdLogger) Fatal(message string, params ...interface{}) {
+  	if l.level <= logadapter.LOG_FATAL {
 	l.Log.Fatal(fmt.Printf("FATAL: %s - %s", fmt.Sprintf(message, params...), l.getKeys()))
+    }
 }
 func (l *StdLogger) Panic(message string, params ...interface{}) {
+  	if l.level <= logadapter.LOG_PANIC {
 	l.Log.Panic(fmt.Printf("PANIC: %s - %s", fmt.Sprintf(message, params...), l.getKeys()))
+    }
 }
 func (l *StdLogger) New(name string) logadapter.Logger {
 	//nl := &StdLogger{keys: l.keys}
