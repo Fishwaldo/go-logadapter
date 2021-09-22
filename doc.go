@@ -22,35 +22,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package logadapter_test
+/*
+Package go-logadapter allows you to use different Log Libraries in your
+packages/applications
 
-import (
-	"github.com/Fishwaldo/go-logadapter"
-	"github.com/Fishwaldo/go-logadapter/loggers/std"
-)
+This package just provides wrappers around different log libraries and 
+allows the user of your library to use their preferred Logging Library
 
-type TestStruct struct {
-	Logger logadapter.Logger
-}
+It implements common Logging Levels:
 
-func (t *TestStruct) Init() {
-	temp := stdlogger.DefaultLogger()
-	temp.SetLevel(stdlogger.LOG_TRACE)
-	t.Logger = temp
-}
+	* Trace
+	* Debug
+	* Info
+	* Warn
+	* Error
+	* Fatal
+	* Panic
 
-func (t *TestStruct) LogSomething() {
-	t.Logger.Info("This is a message")
-}
+It also supports basic structured logging features, but specifing a key/value 
+pair using the With Statement.
 
-func (t *TestStruct) StructuredLog() {
-	t.Logger.With("Test", "Message").Trace("Hello %s", string("world"))
-}
+Supported Logging Libraries
 
-func Example() {
-	ts := TestStruct{}
-	ts.Init()
-	ts.LogSomething()
-	ts.StructuredLog()
-	ts.Logger.Warn("This is outside the Structure")
-}
+logadapter currently supports:
+
+	* (std library logger) https://pkg.go.dev/log
+	* (logrus) https://github.com/sirupsen/logrus
+	* (zap) https://github.com/uber-go/zap
+
+Adding additional Logging Libraries is realatively straight forward by creating
+a wrapper that implements the (Logger) https://pkg.go.dev/github.com/Fishwaldo/go-logadapter#Logger Interface
+
+*/
+package logadapter

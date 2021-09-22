@@ -22,35 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package logadapter_test
+package logadapter
 
 import (
-	"github.com/Fishwaldo/go-logadapter"
-	"github.com/Fishwaldo/go-logadapter/loggers/std"
 )
-
-type TestStruct struct {
-	Logger logadapter.Logger
+// Logger is a interface that Applications/Libraries use
+// 
+// The actual Loggers should implement a structure 
+// that Adhears to this Interface
+type Logger interface {
+	// Log a Trace Message
+	Trace(message string, params ...interface{})
+	// Log a Debug Message
+	Debug(message string, params ...interface{})
+	// Log a Info Message
+	Info(message string, params ...interface{})
+	// Log a Warn Message
+	Warn(message string, params ...interface{})
+	// Log a Error Message
+	Error(message string, params ...interface{})
+	// Log a Fatal Message (some implementations may call os.exit() here)
+	Fatal(message string, params ...interface{})
+	// Log a Panic Message (some implmentations may call Panic)
+	Panic(message string, params ...interface{})
+	// Create a New Logger Instance with Name
+	New(name string) (l Logger)
+	// Add Key/Value Pairs for Structured Logging and return a new Logger
+	With(key string, value interface{}) (l Logger)
+	// Set the Log Prefix
+	SetPrefix(name string)
+	// Get the Log Prefix
+	GetPrefix() (string)
+	// Sync/Flush the Log Buffers 
+	Sync()
 }
 
-func (t *TestStruct) Init() {
-	temp := stdlogger.DefaultLogger()
-	temp.SetLevel(stdlogger.LOG_TRACE)
-	t.Logger = temp
-}
 
-func (t *TestStruct) LogSomething() {
-	t.Logger.Info("This is a message")
-}
-
-func (t *TestStruct) StructuredLog() {
-	t.Logger.With("Test", "Message").Trace("Hello %s", string("world"))
-}
-
-func Example() {
-	ts := TestStruct{}
-	ts.Init()
-	ts.LogSomething()
-	ts.StructuredLog()
-	ts.Logger.Warn("This is outside the Structure")
-}

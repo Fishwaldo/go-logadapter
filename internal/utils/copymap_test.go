@@ -22,35 +22,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package logadapter_test
+package utils
 
 import (
-	"github.com/Fishwaldo/go-logadapter"
-	"github.com/Fishwaldo/go-logadapter/loggers/std"
+    "testing"
+
+    "github.com/stretchr/testify/require"
 )
 
-type TestStruct struct {
-	Logger logadapter.Logger
-}
+func TestCopyMap(t *testing.T) {
+    m1 := map[string]interface{}{
+        "a": "bbb",
+        "b": map[string]interface{}{
+            "c": 123,
+        },
+        "c": []interface{} {
+            "d", "e", map[string]interface{} {
+                "f": "g",
+            },
+        },
+    }
 
-func (t *TestStruct) Init() {
-	temp := stdlogger.DefaultLogger()
-	temp.SetLevel(stdlogger.LOG_TRACE)
-	t.Logger = temp
-}
+    m2 := CopyableMap(m1).DeepCopy()
 
-func (t *TestStruct) LogSomething() {
-	t.Logger.Info("This is a message")
-}
+    m1["a"] = "zzz"
+    delete(m1, "b")
+    m1["c"].([]interface{})[1] = "x"
+    m1["c"].([]interface{})[2].(map[string]interface{})["f"] = "h"
 
-func (t *TestStruct) StructuredLog() {
-	t.Logger.With("Test", "Message").Trace("Hello %s", string("world"))
-}
-
-func Example() {
-	ts := TestStruct{}
-	ts.Init()
-	ts.LogSomething()
-	ts.StructuredLog()
-	ts.Logger.Warn("This is outside the Structure")
+    require.Equal(t, map[string]interface{}{
+        "a": "zzz", 
+        "c": []interface{} {
+            "d", "x", map[string]interface{} {
+                "f": "h",
+            },
+        },
+    }, m1)
+    require.Equal(t, map[string]interface{}{
+        "a": "bbb",
+        "b": map[string]interface{}{
+            "c": 123,
+        },
+        "c": []interface{} {
+            "d", "e", map[string]interface{} {
+                "f": "g",
+            },
+        },
+    }, m2)
 }
