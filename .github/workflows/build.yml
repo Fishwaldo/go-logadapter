@@ -1,4 +1,12 @@
-on: [ push, pull_request ]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  # Goreadme needs permissions to update pull requests comments and change contents.
+  pull-requests: write
+  contents: write
 name: Build
 jobs:
     test:
@@ -16,6 +24,20 @@ jobs:
             -   name: Checkout code
                 uses: actions/checkout@v1
             -   name: Run tests
-                run: go test -v -race -covermode=atomic -coverprofile=coverage
-            -   name: Upload coverage to Codecov
-                run: bash <(curl -s https://codecov.io/bash)
+                run: go test -v -race -covermode=atomic -coverprofile=coverage.out
+            -   name: CodeCov
+                uses: codecov/codecov-action@v2
+    goreadme:
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+        - name: Check out repository
+          uses: actions/checkout@v2
+        - name: Update readme according to Go doc
+          uses: posener/goreadme@v1
+          with:
+            badge-codecov: 'true'
+            badge-godoc: 'true'
+            badge-goreadme: 'true'
+            # Optional: Token allows goreadme to comment the PR with diff preview.
+            github-token: '${{ secrets.GITHUB_TOKEN }}'
