@@ -13,7 +13,7 @@ jobs:
         strategy:
             matrix:
                 go-version: [ 1.16.x, 1.15.x, 1.14.x, 1.13.x ]
-                platform: [ ubuntu-latest, macos-latest ]
+                platform: [ ubuntu-latest, macos-latest, windows-latest ]
         runs-on: ${{ matrix.platform }}
         steps:
             -   name: Install Go
@@ -24,7 +24,7 @@ jobs:
             -   name: Checkout code
                 uses: actions/checkout@v1
             -   name: Run tests
-                run: go test -v -race
+                run: go test -v -race ./...
     codecov:
         runs-on: ubuntu-latest
         needs: test
@@ -35,7 +35,7 @@ jobs:
             -   name: Checkout code
                 uses: actions/checkout@v1
             -   name: Run tests
-                run: go test -v -race -covermode=atomic -coverprofile=coverage.out
+                run: go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
             -   name: CodeCov
                 uses: codecov/codecov-action@v2
     lint:
