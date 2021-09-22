@@ -77,7 +77,7 @@ type TestStruct struct {
 
 func (t *TestStruct) Init() {
 	temp := stdlogger.DefaultLogger()
-	temp.SetLevel(stdlogger.LOG_TRACE)
+	temp.SetLevel(logadapter.LOG_TRACE)
 	t.Logger = temp
 }
 
