@@ -1,4 +1,4 @@
-# logadapter
+# Go-LogAdapter
 
 [![codecov](https://codecov.io/gh/Fishwaldo/go-logadapter/branch/master/graph/badge.svg)](https://codecov.io/gh/Fishwaldo/go-logadapter)
 [![GoDoc](https://img.shields.io/badge/pkg.go.dev-doc-blue)](http://pkg.go.dev/github.com/Fishwaldo/go-logadapter)
