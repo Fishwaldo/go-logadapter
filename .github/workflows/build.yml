@@ -56,28 +56,28 @@ jobs:
                     only-new-issues: true
                     args: --issues-exit-code=0
 
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'go' ]
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: ${{ matrix.language }}
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+    analyze:
+        name: Analyze
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            contents: read
+            security-events: write
+        strategy:
+            fail-fast: false
+            matrix:
+                language: [ 'go' ]
+        steps:
+        - name: Checkout repository
+            uses: actions/checkout@v2
+        - name: Initialize CodeQL
+            uses: github/codeql-action/init@v1
+            with:
+                languages: ${{ matrix.language }}
+        - name: Autobuild
+            uses: github/codeql-action/autobuild@v1
+        - name: Perform CodeQL Analysis
+            uses: github/codeql-action/analyze@v1
 
     goreadme:
         runs-on: ubuntu-latest
@@ -94,17 +94,17 @@ jobs:
             title: 'Go-LogAdapter'
             # Optional: Token allows goreadme to comment the PR with diff preview.
             github-token: '${{ secrets.GITHUB_TOKEN }}'
-  release:
-    #if: startsWith(github.ref, 'refs/tags/')
-    needs: [goreadme]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: release-drafter/release-drafter@master
-        with: 
-          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
-    # steps:
+    release:
+        #if: startsWith(github.ref, 'refs/tags/')
+        needs: [goreadme]
+        runs-on: ubuntu-latest
+        steps:
+        - uses: release-drafter/release-drafter@master
+            with: 
+                prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+        # steps:
     #   - name: Check out repository
     #     uses: actions/checkout@v2    
     #   - name: Build Changelog
