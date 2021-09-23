@@ -100,7 +100,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
         - uses: release-drafter/release-drafter@master
-            with: 
-                prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+          with: 
+            prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
