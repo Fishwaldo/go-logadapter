@@ -13,6 +13,7 @@ categories:
     label: 'type: bug'
   - title: 'Maintenance'
     label: 'type: maintenance'
+  - title: 'Maintenance'
     label: 'type: chore'
   - title: 'Documentation'
     label: 'type: docs'
