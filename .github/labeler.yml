@@ -37,7 +37,7 @@ checks:
       failure: Missing semantic label for merge.
     labels:
       any:
-        - 'type: feat'
+        - 'type: feature'
         - 'type: bug'
         - 'type: chore'
         - 'type: docs'
