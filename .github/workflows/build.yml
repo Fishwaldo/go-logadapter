@@ -69,15 +69,15 @@ jobs:
                 language: [ 'go' ]
         steps:
         - name: Checkout repository
-            uses: actions/checkout@v2
+          uses: actions/checkout@v2
         - name: Initialize CodeQL
-            uses: github/codeql-action/init@v1
-            with:
-                languages: ${{ matrix.language }}
+          uses: github/codeql-action/init@v1
+          with:
+            languages: ${{ matrix.language }}
         - name: Autobuild
-            uses: github/codeql-action/autobuild@v1
+          uses: github/codeql-action/autobuild@v1
         - name: Perform CodeQL Analysis
-            uses: github/codeql-action/analyze@v1
+          uses: github/codeql-action/analyze@v1
 
     goreadme:
         runs-on: ubuntu-latest
@@ -104,22 +104,3 @@ jobs:
                 prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
             env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
-        # steps:
-    #   - name: Check out repository
-    #     uses: actions/checkout@v2    
-    #   - name: Build Changelog
-    #     id: github_release
-    #     uses: mikepenz/release-changelog-builder-action@v1
-    #     with:
-    #       configuration: ".github/releaseconfig.json"
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   - name: Create Release
-    #     uses: actions/create-release@v1
-    #     with:
-    #       tag_name: ${{ github.ref }}
-    #       release_name: ${{ github.ref }}
-    #       body: ${{steps.github_release.outputs.changelog}}
-    #       prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
