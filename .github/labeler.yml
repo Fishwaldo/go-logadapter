@@ -13,8 +13,7 @@ labels:
     matcher:
       title: "^fix: .*"
       commits: "^fix: .*"
-      body: "(\\n|.)*- \\[x\\] fix(\\n|.)*"
-      body: "(\\n|.)*- \\[x\\] bug(\\n|.)*"
+      body: "(\\n|.)*- \\[x\\] (fix|bug)(\\n|.)*"
 
   - label: "type: chore"
     sync: true
