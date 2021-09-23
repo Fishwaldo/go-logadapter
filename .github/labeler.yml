@@ -20,6 +20,8 @@ labels:
     matcher:
       title: "^chore: .*"
       commits: "^chore: .*"
+      body: "(\\n|.)*- \\[x\\] chore(\\n|.)*"
+      files: [ ".github/*" ]
 
   - label: "type: docs"
     sync: true
